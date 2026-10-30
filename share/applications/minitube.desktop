@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Claude FM
+GenericName=Internet Radio
+Comment=Retro mini radio for Claude FM
+Exec=minitube
+Icon=minitube
+Terminal=false
+Categories=AudioVideo;Audio;Player;
+StartupWMClass=io.github.minitube
+StartupNotify=false
+Keywords=radio;youtube;claude;music;minitube;

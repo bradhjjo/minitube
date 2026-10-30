@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="walnut" x2="0" y2="1">
+      <stop stop-color="#6B4A37"/>
+      <stop offset="1" stop-color="#241812"/>
+    </linearGradient>
+    <linearGradient id="cream" x2="0" y2="1">
+      <stop stop-color="#F2E6CF"/>
+      <stop offset="1" stop-color="#CFBB98"/>
+    </linearGradient>
+  </defs>
+  <!-- Bold silhouettes and an oversized dial remain clear at launcher sizes. -->
+  <path d="M21 15V11a4 4 0 0 1 4-4h14a4 4 0 0 1 4 4v4" fill="none" stroke="#38271D" stroke-width="4"/>
+  <rect x="3" y="13" width="58" height="44" rx="7" fill="url(#walnut)" stroke="#241812" stroke-width="2"/>
+  <path d="M9 18h46" stroke="#997358" stroke-width="1.5" stroke-linecap="round"/>
+  <rect x="8" y="21" width="48" height="30" rx="3" fill="url(#cream)" stroke="#241812"/>
+  <!-- Perforated speaker, drawn without font glyphs or external assets. -->
+  <g fill="#594434">
+    <circle cx="14" cy="28" r="1.4"/><circle cx="19" cy="28" r="1.4"/><circle cx="24" cy="28" r="1.4"/>
+    <circle cx="14" cy="33" r="1.4"/><circle cx="19" cy="33" r="1.4"/><circle cx="24" cy="33" r="1.4"/>
+    <circle cx="14" cy="38" r="1.4"/><circle cx="19" cy="38" r="1.4"/><circle cx="24" cy="38" r="1.4"/>
+    <circle cx="14" cy="43" r="1.4"/><circle cx="19" cy="43" r="1.4"/><circle cx="24" cy="43" r="1.4"/>
+  </g>
+  <rect x="29" y="25" width="23" height="12" rx="2" fill="#140F0B" stroke="#8A6640"/>
+  <path d="M32 33h17m-16-5v2m4-2v2m8-2v2m4-2v2" fill="none" stroke="#FFC072" stroke-width="1"/>
+  <path d="M41 27v8" stroke="#FFC072" stroke-width="2"/>
+  <circle cx="35" cy="44" r="4" fill="#6B4A37" stroke="#38271D" stroke-width="1.5"/>
+  <circle cx="47" cy="44" r="4" fill="#6B4A37" stroke="#38271D" stroke-width="1.5"/>
+  <path d="M35 41v2m12-2v2" stroke="#F2E6CF" stroke-width="1.5" stroke-linecap="round"/>
+</svg>
