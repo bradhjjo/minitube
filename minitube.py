@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""MiniTube — a tiny retro radio for YouTube live streams.
+"""MiniTube (Claude FM) — a tiny radio for YouTube live streams.
 
-Lives in the Omarchy bar's tray: left click opens the little radio, middle
-click toggles power, the wheel sets the volume and right click has a menu.
-Audio is played by mpv (with yt-dlp) over its JSON IPC socket; the whole
-face of the radio is drawn with cairo.  Keyboard: space = power, arrows =
+Lives in the Omarchy bar's tray: left click opens the popup, middle click
+toggles power, the wheel sets the volume and right click has a menu. The
+popup follows the current Omarchy theme. Audio is played by mpv (with
+yt-dlp) over its JSON IPC socket.  Keyboard: space = power, arrows =
 volume / tuning, m = mute, q / Esc = hide, Ctrl+Q = quit.
+
+`minitube --tray` (login autostart) waits in the tray, silent, until used.
 """
 
 from __future__ import annotations
@@ -937,7 +939,7 @@ def tray_host_available():
 # the popup
 # --------------------------------------------------------------------------
 class MiniTube(Gtk.ApplicationWindow):
-    def __init__(self, app):
+    def __init__(self, app, autoplay=True):
         super().__init__(application=app)
         self.set_title(APP_NAME)
         self.set_decorated(False)
@@ -1004,7 +1006,8 @@ class MiniTube(Gtk.ApplicationWindow):
 
         self._sync()
         self.mpv.start()
-        GLib.timeout_add(600, self._autoplay)
+        if autoplay:
+            GLib.timeout_add(600, self._autoplay)
 
     # -- layout ------------------------------------------------------------
     def _button(self, icon, tip, handler, *classes):
@@ -1542,9 +1545,10 @@ scale slider {
 
 
 class MiniTubeApp(Gtk.Application):
-    def __init__(self):
+    def __init__(self, tray_only=False):
         super().__init__(application_id=APP_ID, flags=Gio.ApplicationFlags.DEFAULT_FLAGS)
         self.window = None
+        self.tray_only = tray_only
 
     def do_startup(self):
         Gtk.Application.do_startup(self)
@@ -1567,8 +1571,10 @@ class MiniTubeApp(Gtk.Application):
 
     def do_activate(self):
         if self.window is None:
-            self.window = MiniTube(self)
-            if tray_host_available():
+            self.window = MiniTube(self, autoplay=not self.tray_only)
+            # --tray never pops up: at login the bar may come up after us, and
+            # the tray item registers itself as soon as it does
+            if self.tray_only or tray_host_available():
                 return  # start in the tray
         self.window.show_popup()
 
@@ -1582,8 +1588,9 @@ def main():
         return 1
     GLib.set_prgname("minitube")
     GLib.set_application_name(APP_NAME)
-    app = MiniTubeApp()
-    return app.run(sys.argv)
+    tray_only = "--tray" in sys.argv[1:]
+    app = MiniTubeApp(tray_only=tray_only)
+    return app.run([arg for arg in sys.argv if arg != "--tray"])
 
 
 if __name__ == "__main__":

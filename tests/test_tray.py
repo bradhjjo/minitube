@@ -77,7 +77,7 @@ class Harness:
         return self.call("org.freedesktop.DBus", "/org/freedesktop/DBus",
                          "org.freedesktop.DBus", "GetNameOwner", "(s)", (name,))[0]
 
-    def launch(self):
+    def launch(self, *args):
         try:
             owner = self.owner(APP_ID)
         except GLib.Error as error:
@@ -87,7 +87,7 @@ class Harness:
             raise RuntimeError(f"refusing to launch while existing MiniTube owns {APP_ID}: {owner}")
         env = dict(os.environ, XDG_CONFIG_HOME=str(self.config))
         self.log = tempfile.TemporaryFile(mode="w+t")
-        self.process = subprocess.Popen([sys.executable, str(APP)], env=env,
+        self.process = subprocess.Popen([sys.executable, str(APP), *args], env=env,
                                         stdout=self.log, stderr=self.log)
         self.name = f"org.kde.StatusNotifierItem-{self.process.pid}-1"
         self.ipc_path = Path(os.environ.get("XDG_RUNTIME_DIR", f"/run/user/{os.getuid()}")) / f"minitube-{self.process.pid}.sock"
@@ -244,6 +244,18 @@ class Harness:
         self.process.send_signal(signal.SIGTERM)
         self.verify_exit()
 
+    def tray_only(self):
+        self.launch("--tray")
+        assert not self.visible(), "popup mapped after --tray start"
+        time.sleep(4)
+        self.assert_equal(self.ipc("idle-active"), True)
+        assert self.prop("ToolTip")[3].startswith("Power off"), self.prop("ToolTip")
+        self.event(2)
+        wait_for(lambda: self.ipc("idle-active") is False, timeout=30,
+                 description="Power from the tray menu starts playback")
+        assert not self.visible(), "popup mapped by tray Power"
+        self.quit_menu()
+
     def cleanup(self):
         if self.process is not None and self.process.poll() is None:
             self.process.terminate()
@@ -290,6 +302,8 @@ def main():
             if harness.process.poll() is None or harness.find_mpv():
                 raise RuntimeError("first launch did not clean up")
             harness.check("8 SIGTERM cleans second launch", harness.quit_signal)
+            harness.cleanup()
+            harness.check("9 --tray waits silently until Power", harness.tray_only)
         except Exception as error:
             harness.failures.append(("setup/lifecycle", str(error)))
             print(f"FAIL setup/lifecycle: {error}", flush=True)
