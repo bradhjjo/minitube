@@ -136,3 +136,9 @@ python3 tests/test_ui.py     # 팝업 위젯을 in-process로 구동 + mpv IPC �
 ```
 
 각 체크마다 `PASS`/`FAIL`을 한 줄씩 찍고, 모두 통과하면 종료 코드 0을 돌려준다. `test_ui.py`는 Hyprland(`hyprctl`)와 `grim`이 있어야 한다.
+
+## 라이선스
+
+[MIT](LICENSE) © 2026 Brad Jo
+
+Claude, Claude Code와 Claude Code 마스코트는 Anthropic의 상표이자 저작물이며, 이 라이선스의 대상이 아니다. 이 리포는 Anthropic과 무관한 개인 프로젝트다.
